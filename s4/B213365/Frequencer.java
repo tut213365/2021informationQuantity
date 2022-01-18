@@ -237,7 +237,54 @@ public class Frequencer implements FrequencerInterface{
         //
         // ここに比較のコードを書け 
         //
-        return 0; // この行は変更しなければならない。
+
+        //System.out.println(i+","+j+","+k);
+        int targetjkLength=k-j;
+        for(int loop=0;loop<targetjkLength;loop++){
+            if(mySpace.length-1<suffixArray[i]+loop)return 2;//suffix_i < target_j_k
+            if(mySpace[suffixArray[i]+loop] < myTarget[j+loop])return 1;//suffix_i < target_j_k
+            else if(mySpace[suffixArray[i]+loop] > myTarget[j+loop])return -1;//suffix_i > target_j_k
+        }
+        return 0; // j~kの文字列が一致し，さらにtargetjkLengthよりsuffixarray文字列の方が大きい
+    }
+
+    //suffixarrayから「start,endで表されるtargetの部分文字列を先頭とするindex」を二分探索法で取り出す．
+    //suffixStart,suffixEndの初期値はそれぞれ0,mySpace.length-1である
+    //条件に合うindexは複数存在することがあるが，どのindexを返戻するかはここでは認知しない
+    private int binarySearch(int start , int end){//,boolean returnStart){
+        int left = 0;
+        int right = suffixArray.length-1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int compResult=targetCompare(mid,start,end);
+
+            //System.out.println("comp: "+compResult);
+            if (compResult==0) {
+                return mid;
+            } else if (compResult<0) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        //System.out.println("indexError on Start_End_Index");
+
+        return -1;
+        /*
+        if(returnStart){
+            while(mid>0){
+                if(targetCompare(mid--,start,end)!=0){
+                    mid++;
+                    break;
+                }
+            }
+        }else{
+            while(mid<)
+        }
+        return ret;
+        */
+
     }
 
 
@@ -271,7 +318,14 @@ public class Frequencer implements FrequencerInterface{
         //                                                                          
         // ここにコードを記述せよ。                                                 
         //                                                                         
-        return suffixArray.length; //このコードは変更しなければならない。          
+        int index=binarySearch(start,end);
+        while(index>0){
+            if(targetCompare(--index,start,end)!=0){
+                index++;
+                break;
+            }
+        }
+        return index; //このコードは変更しなければならない。
     }
 
     private int subByteEndIndex(int start, int end) {
@@ -303,7 +357,13 @@ public class Frequencer implements FrequencerInterface{
         //                                                                   
         //　ここにコードを記述せよ                                           
         //                                                                   
-        return suffixArray.length; // この行は変更しなければならない、       
+        int index=binarySearch(start,end);
+        while(index<suffixArray.length-1 && index>0){
+            if(targetCompare(++index,start,end)!=0){
+                break;
+            }
+        }
+        return index; // この行は変更しなければならない、
     }
 
 
