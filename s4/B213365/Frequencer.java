@@ -197,6 +197,7 @@ public class Frequencer implements FrequencerInterface{
         // 演習の内容は、適切なsubByteStartIndexとsubByteEndIndexを定義することである。
         int first = subByteStartIndex(start, end);
         int last1 = subByteEndIndex(start, end);
+        //System.out.println(myTarget+":"+first+","+last1);
         return last1 - first;
     }
     // 変更してはいけないコードはここまで。
@@ -238,8 +239,7 @@ public class Frequencer implements FrequencerInterface{
         // ここに比較のコードを書け 
         //
 
-        //System.out.println(i+","+j+","+k);
-        int targetjkLength=k-j;
+        int targetjkLength=k-j;//the length of a part of target string from start to end
         for(int loop=0;loop<targetjkLength;loop++){
             if(mySpace.length-1<suffixArray[i]+loop)return 2;//suffix_i < target_j_k
             if(mySpace[suffixArray[i]+loop] < myTarget[j+loop])return 1;//suffix_i < target_j_k
@@ -248,17 +248,15 @@ public class Frequencer implements FrequencerInterface{
         return 0; // j~kの文字列が一致し，さらにtargetjkLengthよりsuffixarray文字列の方が大きい
     }
 
-    //suffixarrayから「start,endで表されるtargetの部分文字列を先頭とするindex」を二分探索法で取り出す．
-    //suffixStart,suffixEndの初期値はそれぞれ0,mySpace.length-1である
-    //条件に合うindexは複数存在することがあるが，どのindexを返戻するかはここでは認知しない
-    private int binarySearch(int start , int end){//,boolean returnStart){
+
+    private int binarySearch(int start , int end){
+        //suffixarrayから「start,endで表されるtargetの部分文字列を先頭とするindex」を二分探索法で取り出す．
+        //条件に合うindexは複数存在することがあるが，どのindexを返戻するかはここでは考えない
         int left = 0;
         int right = suffixArray.length-1;
         while (left <= right) {
             int mid = (left + right) / 2;
-            int compResult=targetCompare(mid,start,end);
-
-            //System.out.println("comp: "+compResult);
+            int compResult=targetCompare(mid,start,end);//temporarily store the comparison result.
             if (compResult==0) {
                 return mid;
             } else if (compResult<0) {
@@ -267,23 +265,7 @@ public class Frequencer implements FrequencerInterface{
                 left = mid + 1;
             }
         }
-
-        //System.out.println("indexError on Start_End_Index");
-
-        return -1;
-        /*
-        if(returnStart){
-            while(mid>0){
-                if(targetCompare(mid--,start,end)!=0){
-                    mid++;
-                    break;
-                }
-            }
-        }else{
-            while(mid<)
-        }
-        return ret;
-        */
+        return -1;//if no word is matched or an error occured, return -1.
 
     }
 
@@ -319,6 +301,10 @@ public class Frequencer implements FrequencerInterface{
         // ここにコードを記述せよ。                                                 
         //                                                                         
         int index=binarySearch(start,end);
+
+        //move the index to the start of target indexes
+
+
         while(index>0){
             if(targetCompare(--index,start,end)!=0){
                 index++;
@@ -358,12 +344,17 @@ public class Frequencer implements FrequencerInterface{
         //　ここにコードを記述せよ                                           
         //                                                                   
         int index=binarySearch(start,end);
-        while(index<suffixArray.length-1 && index>0){
+
+        //move the index to the end of target indexes
+        while(index>0){
             if(targetCompare(++index,start,end)!=0){
+                break;
+            }else if (index==suffixArray.length-1){
+                index=suffixArray.length;
                 break;
             }
         }
-        return index; // この行は変更しなければならない、
+        return index;
     }
 
 
@@ -391,6 +382,9 @@ public class Frequencer implements FrequencerInterface{
             frequencerObject.printSuffixArray();
             frequencerObject = new Frequencer();
             frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
+            frequencerObject.printSuffixArray();
+            frequencerObject = new Frequencer();
+            frequencerObject.setSpace("lllll ".getBytes());
             frequencerObject.printSuffixArray();
             /* Example from "Hi Ho Hi Ho"    
                0: Hi Ho                      
