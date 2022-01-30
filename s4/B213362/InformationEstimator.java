@@ -59,7 +59,7 @@ public class InformationEstimator implements InformationEstimatorInterface {
         boolean [] partition = new boolean[myTarget.length+1];
         int np = 1<<(myTarget.length-1);
         double value = Double.MAX_VALUE; // value = mininimum of each "value1".
-	if(debugMode) { showVariables(); }
+	    if(debugMode) { showVariables(); }
         if(debugMode) { System.out.printf("np=%d length=%d ", np, +myTarget.length); }
 
         for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
@@ -102,7 +102,7 @@ public class InformationEstimator implements InformationEstimatorInterface {
     public static void main(String[] args) {
         InformationEstimator myObject;
         double value;
-	debugMode = true;
+	    debugMode = true;
         myObject = new InformationEstimator();
         myObject.setSpace("3210321001230123".getBytes());
         myObject.setTarget("0".getBytes());

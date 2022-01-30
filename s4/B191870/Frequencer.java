@@ -1,7 +1,6 @@
 package s4.B191870;  // ここは、かならず、自分の名前に変えよ。
 import java.lang.*;
 import s4.specification.*;
-import java.io.*;
 
 
 /*package s4.specification;
@@ -138,7 +137,7 @@ public class Frequencer implements FrequencerInterface{
         //   suffixArray[ 2]= 0:CBA
         // のようになるべきである。
 
-        int temp;
+        /*int temp;
         for(int x = 0; x < suffixArray.length; x++) {
             for(int y = 0; y < suffixArray.length -x -1; y++) {
                 if(suffixCompare(suffixArray[y], suffixArray[y+1]) == 1) {
@@ -149,6 +148,77 @@ public class Frequencer implements FrequencerInterface{
                     continue;
                 }
             }
+        }*/
+        //merge sort method is defined below
+        merge_sort(suffixArray, 0, space.length - 1); 
+    }
+
+    private void merge(int arr[], int l, int m, int r)
+    {
+        // Find sizes of two subarrays to be merged
+        int n1 = m - l + 1;
+        int n2 = r - m;
+  
+        /* Create temp arrays */
+        int L[] = new int[n1];
+        int R[] = new int[n2];
+  
+        /*Copy data to temp arrays*/
+        for (int i = 0; i < n1; ++i)
+            L[i] = arr[l + i];
+        for (int j = 0; j < n2; ++j)
+            R[j] = arr[m + 1 + j];
+  
+        /* Merge the temp arrays */
+  
+        // Initial indexes of first and second subarrays
+        int i = 0, j = 0;
+  
+        // Initial index of merged subarray array
+        int k = l;
+        
+        while (i < n1 && j < n2) {
+            // use suffixCompare to compare the corresponding suffix
+            if (suffixCompare(L[i], R[j]) == -1 || suffixCompare(L[i], R[j]) == 0) {
+                arr[k] = L[i];
+                i++;
+            } else {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+
+        /* Copy remaining elements of L[] if any */
+        while (i < n1) {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+
+        /* Copy remaining elements of R[] if any */
+        while (j < n2) {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+  
+    }
+  
+    // Main function that sorts arr[l..r] using
+    // merge()
+    void merge_sort(int arr[], int l, int r)
+    {
+        if (l < r) {
+            // Find the middle point
+            int m =l+ (r-l)/2;
+  
+            // Sort first and second halves
+            merge_sort(arr, l, m);
+            merge_sort(arr, m + 1, r);
+  
+            // Merge the sorted halves
+            merge(arr, l, m, r);
         }
     }
 
@@ -277,9 +347,9 @@ public class Frequencer implements FrequencerInterface{
             }
             int mid = low + (high-low)/2;
             if (targetCompare(suffixArray[mid], target_start, target_end) == 1)
-                return Bsearch(low, (mid - 1), target_start, target_end,1);
+                return Bsearch(low, mid - 1, target_start, target_end,1);
             else
-                return Bsearch((mid + 1), high, target_start, target_end,1);     
+                return Bsearch(mid + 1, high, target_start, target_end,1);     
         }
 
         return -1;
@@ -380,7 +450,7 @@ public class Frequencer implements FrequencerInterface{
             frequencerObject = new Frequencer();
             frequencerObject.setSpace("CBA".getBytes());
             frequencerObject.printSuffixArray();
-            frequencerObject.setTarget("BAC".getBytes());
+            frequencerObject.setTarget("BA".getBytes());
             int start_index1 = frequencerObject.subByteStartIndex(0, frequencerObject.myTarget.length);
             System.out.print("subByteStartIndex of the target is " + start_index1 + "\n");
             int end_index1 = frequencerObject.subByteEndIndex(0, frequencerObject.myTarget.length);
@@ -391,11 +461,14 @@ public class Frequencer implements FrequencerInterface{
             frequencerObject.setSpace("HHH".getBytes());
             frequencerObject.printSuffixArray();
             frequencerObject.setTarget("H".getBytes());
+
+           
             int start_index2 = frequencerObject.subByteStartIndex(0, frequencerObject.myTarget.length);
             System.out.print("subByteStartIndex of the target is " + start_index2 + "\n");
             int end_index2 = frequencerObject.subByteEndIndex(0, frequencerObject.myTarget.length);
             System.out.print("subByteEndIndex of the target is " + end_index2 + "\n");
-
+            
+            
             // case "Hi Ho Hi Ho",target is H
             frequencerObject = new Frequencer();
             frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
@@ -413,7 +486,7 @@ public class Frequencer implements FrequencerInterface{
                9:o                           
               10:o Hi Ho                     
             */
-            frequencerObject.setTarget("Ho".getBytes());                               
+            frequencerObject.setTarget("H".getBytes());                               
             // ****  Please write code to check subByteStartIndex, and subByteEndIndex
             int start_index3 = frequencerObject.subByteStartIndex(0, frequencerObject.myTarget.length);
             System.out.print("subByteStartIndex of the target is " + start_index3 + "\n");

@@ -273,14 +273,9 @@ public class Frequencer implements FrequencerInterface {
         if (end > myTarget.length)
             end = myTarget.length;
 
-        // Start from the beginning of the suffix array,
-        // if there is no match found, return -1
-        for (int index = 0; index < suffixArray.length; index++) {
-            if (targetCompare(suffixArray[index], start, end) == 0)
-                return index;
-        }
-
-        return -1;
+        // Find the first position of target in suffix array using binary search
+        return binarySearchForStartIndex(suffixArray, 0, suffixArray.length - 1,
+                start, end);
     }
 
     private int subByteEndIndex(int start, int end) {
@@ -318,16 +313,43 @@ public class Frequencer implements FrequencerInterface {
         if (end > myTarget.length)
             end = myTarget.length;
 
-        // Start from the end of the suffix array,
-        // if there is no match found, return -1
-        // else, the found index + 1 is returned
-        for (int index = suffixArray.length - 1; index >= 0; index--) {
-            if (targetCompare(suffixArray[index], start, end) == 0)
-                return index + 1;
+        // Find the last position of target in suffix array using binary search
+        return binarySearchForEndIndex(suffixArray, 0, suffixArray.length - 1, start, end);
+
+    }
+
+    private int binarySearchForStartIndex(int[] arr, int left, int right, int start, int end) {
+        if (left > right)
+            return -1;
+        int mid = (left + right) / 2;
+        int compareResult = targetCompare(suffixArray[mid], start, end);
+        if (compareResult > 0)
+            return binarySearchForStartIndex(arr, left, mid - 1, start, end);
+        else if (compareResult < 0)
+            return binarySearchForStartIndex(arr, mid + 1, right, start, end);
+        else {
+            if (targetCompare(suffixArray[left], start, end) == 0)
+                return left;
+            else
+                return binarySearchForStartIndex(arr, left + 1, mid, start, end);
         }
+    }
 
-        return -1;
-
+    private int binarySearchForEndIndex(int[] arr, int left, int right, int start, int end) {
+        if (left > right)
+            return -1;
+        int mid = (left + right) / 2;
+        int compareResult = targetCompare(suffixArray[mid], start, end);
+        if (compareResult > 0)
+            return binarySearchForEndIndex(arr, left, mid - 1, start, end);
+        else if (compareResult < 0)
+            return binarySearchForEndIndex(arr, mid + 1, right, start, end);
+        else {
+            if (targetCompare(suffixArray[right], start, end) == 0)
+                return right + 1;
+            else
+                return binarySearchForEndIndex(arr, mid, right - 1, start, end);
+        }
     }
 
     // Suffix Arrayを使ったプログラムのホワイトテストは、
@@ -352,6 +374,10 @@ public class Frequencer implements FrequencerInterface {
             frequencerObject = new Frequencer();
             frequencerObject.setSpace("HHH".getBytes());
             // frequencerObject.printSuffixArray();
+            frequencerObject = new Frequencer();
+            frequencerObject.setSpace("abcdekicbc".getBytes());
+            // frequencerObject.printSuffixArray();
+
             frequencerObject = new Frequencer();
             frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
             frequencerObject.printSuffixArray();
